@@ -46,6 +46,37 @@ export function CaseFileRoom({ caseFile }: CaseFileRoomProps) {
           {dossier.evidence.map((item) => (
             <EvidenceItem key={item.id} item={item} />
           ))}
+<<<<<<< HEAD
+=======
+
+          {/* Hero closing image (if present) */}
+          {dossier.hero && (
+            <div className="dossier-hero">
+              <div className="dossier-hero-text">
+                {dossier.hero.preText.map((line) => (
+                  <p className="dossier-hero-line" key={line}>
+                    {line}
+                  </p>
+                ))}
+              </div>
+
+              <div className="dossier-hero-frame">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="dossier-hero-photo"
+                  src={encodeURI(dossier.hero.src)}
+                  alt={dossier.hero.alt}
+                  loading="lazy"
+                  draggable={false}
+                />
+              </div>
+
+              <p className="dossier-hero-stamp">
+                {dossier.hero.closingStamp}
+              </p>
+            </div>
+          )}
+>>>>>>> dd1bcf5 (Update project)
         </div>
       ))}
 

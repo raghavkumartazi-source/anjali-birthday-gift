@@ -10,6 +10,10 @@ import { ArchiveLoginRoom } from "@/components/archive/rooms/ArchiveLoginRoom";
 import { RecoveredFootageRoom } from "@/components/archive/rooms/RecoveredFootageRoom";
 import { CaseFileRoom } from "@/components/archive/rooms/CaseFileRoom";
 import { DeckRoom } from "@/components/archive/rooms/DeckRoom";
+<<<<<<< HEAD
+=======
+import { LetterRoom } from "@/components/archive/rooms/LetterRoom";
+>>>>>>> dd1bcf5 (Update project)
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -293,6 +297,12 @@ export function ArchiveExperience() {
             ".evidence-marker",
             ".evidence-note",
             ".casefile-outro-line",
+<<<<<<< HEAD
+=======
+            ".dossier-hero-line",
+            ".dossier-hero-frame",
+            ".dossier-hero-stamp",
+>>>>>>> dd1bcf5 (Update project)
           ],
           { autoAlpha: 1, y: 0, scale: 1 },
         );
@@ -319,6 +329,12 @@ export function ArchiveExperience() {
       gsap.set(".evidence-marker", { scale: 0 });
       gsap.set(".evidence-note", { autoAlpha: 0, y: 10 });
       gsap.set(".casefile-outro-line", { autoAlpha: 0, y: 16 });
+<<<<<<< HEAD
+=======
+      gsap.set(".dossier-hero-line", { autoAlpha: 0, y: 14 });
+      gsap.set(".dossier-hero-frame", { autoAlpha: 0, y: 30, scale: 0.95 });
+      gsap.set(".dossier-hero-stamp", { autoAlpha: 0, y: 10 });
+>>>>>>> dd1bcf5 (Update project)
 
       /* ── Case file entry — pinned stamp reveal ── */
 
@@ -482,6 +498,70 @@ export function ArchiveExperience() {
         }
       });
 
+<<<<<<< HEAD
+=======
+      /* ── Dossier hero reveal ── */
+
+      gsap.utils.toArray<HTMLElement>(".dossier-hero").forEach((hero) => {
+        const heroLines = hero.querySelectorAll(".dossier-hero-line");
+        const heroFrame = hero.querySelector(".dossier-hero-frame");
+        const heroStamp = hero.querySelector(".dossier-hero-stamp");
+
+        const heroTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: hero,
+            start: "top 78%",
+            end: "top 10%",
+            scrub: 0.8,
+          },
+        });
+
+        // Pre-text lines fade in one by one
+        if (heroLines.length) {
+          heroTl.to(
+            heroLines,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.12,
+              stagger: 0.1,
+              ease: "power2.out",
+            },
+            0,
+          );
+        }
+
+        // Hero photo rises into frame — cinematic settle
+        if (heroFrame) {
+          heroTl.to(
+            heroFrame,
+            {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.4,
+              ease: "power2.out",
+            },
+            0.35,
+          );
+        }
+
+        // DOSSIER COMPLETE stamp
+        if (heroStamp) {
+          heroTl.to(
+            heroStamp,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.15,
+              ease: "power2.out",
+            },
+            0.75,
+          );
+        }
+      });
+
+>>>>>>> dd1bcf5 (Update project)
       /* ── Outro reveal ── */
 
       const outroLines =
@@ -508,20 +588,29 @@ export function ArchiveExperience() {
   );
 
   /* ──────────────────────────────────────────────
+<<<<<<< HEAD
      SCENE 4 — Deck of Evidence scrub
+=======
+     SCENE 4 — Deck of Evidence (pinned single-card)
+>>>>>>> dd1bcf5 (Update project)
      ────────────────────────────────────────────── */
 
   useGSAP(
     () => {
       const root = rootRef.current;
+<<<<<<< HEAD
       const deckPin = deckPinRef.current;
       if (!root || !deckPin) return;
+=======
+      if (!root) return;
+>>>>>>> dd1bcf5 (Update project)
 
       const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
       if (reducedMotion) {
+<<<<<<< HEAD
         // Fallback for reduced motion: just show cards statically or gracefully fallback
         return;
       }
@@ -546,10 +635,66 @@ export function ArchiveExperience() {
           // The end is proportional to the number of cards so there's enough scroll space
           end: `+=${cards.length * 100}%`,
           scrub: 1,
+=======
+        gsap.set(".deck-card", { opacity: 1 });
+        gsap.set(".deck-card-inner", { rotateY: 180 });
+        return;
+      }
+
+      /* ── Intro reveal ── */
+
+      gsap.set(".deck-intro-label", { autoAlpha: 0, y: 10 });
+      gsap.set(".deck-intro-title", { autoAlpha: 0, y: 20 });
+      gsap.set(".deck-intro-sub", { autoAlpha: 0, y: 12 });
+
+      const introTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".deck-intro",
+          start: "top 70%",
+          end: "top 18%",
+          scrub: 1,
+        },
+      });
+
+      introTl.to(
+        ".deck-intro-label",
+        { autoAlpha: 1, y: 0, duration: 0.2, ease: "power2.out" },
+        0,
+      );
+      introTl.to(
+        ".deck-intro-title",
+        { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" },
+        0.15,
+      );
+      introTl.to(
+        ".deck-intro-sub",
+        { autoAlpha: 1, y: 0, duration: 0.25, ease: "power2.out" },
+        0.4,
+      );
+
+      /* ── Pinned card dealing ── */
+
+      const cards = gsap.utils.toArray<HTMLElement>(".deck-card");
+      const totalCards = cards.length;
+
+      // All cards start invisible, below, and un-flipped
+      gsap.set(cards, { opacity: 0, y: "35vh", rotateX: 12 });
+      gsap.set(".deck-card-inner", { rotateY: 0 });
+      gsap.set(".deck-wash", { opacity: 0 });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".deck-stage",
+          pin: true,
+          start: "top top",
+          end: `+=${totalCards * 150}%`,
+          scrub: 0.8,
+>>>>>>> dd1bcf5 (Update project)
           anticipatePin: 1,
         },
       });
 
+<<<<<<< HEAD
       cards.forEach((card, i) => {
         const isFinal = card.classList.contains("deck-card--final");
         const inner = card.querySelector(".deck-card-inner");
@@ -558,10 +703,21 @@ export function ArchiveExperience() {
         const startTime = i * 2;
 
         // Step 1: Card rises from the deck, scales up, fades in
+=======
+      // Each card gets a 4-phase sequence
+      // Phase durations within each card's time budget (1 unit per card)
+      cards.forEach((card, i) => {
+        const inner = card.querySelector(".deck-card-inner");
+        const isFinal = card.classList.contains("deck-card--final");
+        const t = i; // timeline position for this card
+
+        // Phase 1: Card enters — rises from below, fades in
+>>>>>>> dd1bcf5 (Update project)
         timeline.to(
           card,
           {
             opacity: 1,
+<<<<<<< HEAD
             z: 0,
             y: "0vh",
             rotateX: 0,
@@ -572,11 +728,23 @@ export function ArchiveExperience() {
         );
 
         // Step 2: Card flips over revealing the reason
+=======
+            y: "0vh",
+            rotateX: 0,
+            duration: 0.25,
+            ease: "power2.out",
+          },
+          t,
+        );
+
+        // Phase 2: Card flips — rotateY 180 reveals the front face
+>>>>>>> dd1bcf5 (Update project)
         if (inner) {
           timeline.to(
             inner,
             {
               rotateY: 180,
+<<<<<<< HEAD
               duration: 1.2,
               ease: "power3.inOut",
             },
@@ -607,6 +775,44 @@ export function ArchiveExperience() {
               ease: "power2.in",
             },
             startTime + 2.5 // After pause for reading
+=======
+              duration: 0.35,
+              ease: "power3.inOut",
+            },
+            t + 0.2,
+          );
+        }
+
+        // Phase 3 & 4: Hold, then exit (or hold + wash for final)
+        if (isFinal) {
+          // Final card: glow intensifies, then wash
+          timeline.to(
+            card,
+            {
+              boxShadow:
+                "0 0 3rem rgba(245,200,111,0.3), 0 0 6rem rgba(245,200,111,0.1)",
+              duration: 0.3,
+            },
+            t + 0.7,
+          );
+          timeline.to(
+            ".deck-wash",
+            { opacity: 1, duration: 0.25, ease: "power2.in" },
+            t + 0.9,
+          );
+        } else {
+          // Normal cards: fly upward and fade out
+          timeline.to(
+            card,
+            {
+              opacity: 0,
+              y: "-30vh",
+              rotateX: -8,
+              duration: 0.2,
+              ease: "power2.in",
+            },
+            t + 0.75,
+>>>>>>> dd1bcf5 (Update project)
           );
         }
       });
@@ -614,6 +820,104 @@ export function ArchiveExperience() {
     { scope: rootRef },
   );
 
+<<<<<<< HEAD
+=======
+  /* ──────────────────────────────────────────────
+     SCENE 5 — The Letter Room
+     ────────────────────────────────────────────── */
+
+  useGSAP(
+    () => {
+      const root = rootRef.current;
+      if (!root) return;
+
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      /* ── Letter blocks: gentle fade-in ── */
+
+      const allBlocks = gsap.utils.toArray<HTMLElement>(".letter-block");
+      const bridgeEl = root.querySelector(".letter-bridge-text");
+      const headerEls = gsap.utils.toArray<HTMLElement>(".letter-header");
+
+      if (reducedMotion) {
+        gsap.set([...allBlocks, ...headerEls], { autoAlpha: 1, y: 0 });
+        if (bridgeEl) gsap.set(bridgeEl, { autoAlpha: 1, y: 0 });
+        return;
+      }
+
+      // Initial states
+      gsap.set(allBlocks, { autoAlpha: 0, y: 18 });
+      gsap.set(headerEls, { autoAlpha: 0, y: 14 });
+      if (bridgeEl) gsap.set(bridgeEl, { autoAlpha: 0, y: 10 });
+
+      // Letter headers
+      headerEls.forEach((header) => {
+        gsap.to(header, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: header,
+            start: "top 78%",
+            end: "top 50%",
+            scrub: 1,
+          },
+        });
+      });
+
+      // Each paragraph/hero/climax block
+      allBlocks.forEach((block) => {
+        const blockType = block.getAttribute("data-block-type");
+        const isClimax = blockType === "climax";
+
+        gsap.to(block, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: block,
+            start: "top 82%",
+            end: "top 55%",
+            scrub: 1,
+          },
+        });
+
+        // Climax line: pin briefly so the experience holds
+        if (isClimax) {
+          ScrollTrigger.create({
+            trigger: block,
+            start: "center center",
+            end: "+=60%",
+            pin: true,
+            pinSpacing: true,
+          });
+        }
+      });
+
+      // Bridge transition
+      if (bridgeEl) {
+        gsap.to(bridgeEl, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: bridgeEl,
+            start: "top 70%",
+            end: "top 40%",
+            scrub: 1,
+          },
+        });
+      }
+    },
+    { scope: rootRef },
+  );
+
+>>>>>>> dd1bcf5 (Update project)
   return (
     <main
       ref={rootRef}
@@ -650,7 +954,14 @@ export function ArchiveExperience() {
       <CaseFileRoom caseFile={archiveRooms.caseFile} />
 
       {/* ── Scene 4 — Deck of Evidence ── */}
+<<<<<<< HEAD
       <DeckRoom ref={deckPinRef} />
+=======
+      <DeckRoom />
+
+      {/* ── Scene 5 — Letter Room ── */}
+      <LetterRoom />
+>>>>>>> dd1bcf5 (Update project)
     </main>
   );
 }
