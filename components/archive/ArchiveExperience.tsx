@@ -10,10 +10,7 @@ import { ArchiveLoginRoom } from "@/components/archive/rooms/ArchiveLoginRoom";
 import { RecoveredFootageRoom } from "@/components/archive/rooms/RecoveredFootageRoom";
 import { CaseFileRoom } from "@/components/archive/rooms/CaseFileRoom";
 import { DeckRoom } from "@/components/archive/rooms/DeckRoom";
-<<<<<<< HEAD
-=======
 import { LetterRoom } from "@/components/archive/rooms/LetterRoom";
->>>>>>> dd1bcf5 (Update project)
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -21,7 +18,6 @@ export function ArchiveExperience() {
   const rootRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const deckPinRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -297,12 +293,9 @@ export function ArchiveExperience() {
             ".evidence-marker",
             ".evidence-note",
             ".casefile-outro-line",
-<<<<<<< HEAD
-=======
             ".dossier-hero-line",
             ".dossier-hero-frame",
             ".dossier-hero-stamp",
->>>>>>> dd1bcf5 (Update project)
           ],
           { autoAlpha: 1, y: 0, scale: 1 },
         );
@@ -329,12 +322,9 @@ export function ArchiveExperience() {
       gsap.set(".evidence-marker", { scale: 0 });
       gsap.set(".evidence-note", { autoAlpha: 0, y: 10 });
       gsap.set(".casefile-outro-line", { autoAlpha: 0, y: 16 });
-<<<<<<< HEAD
-=======
       gsap.set(".dossier-hero-line", { autoAlpha: 0, y: 14 });
       gsap.set(".dossier-hero-frame", { autoAlpha: 0, y: 30, scale: 0.95 });
       gsap.set(".dossier-hero-stamp", { autoAlpha: 0, y: 10 });
->>>>>>> dd1bcf5 (Update project)
 
       /* ── Case file entry — pinned stamp reveal ── */
 
@@ -498,8 +488,6 @@ export function ArchiveExperience() {
         }
       });
 
-<<<<<<< HEAD
-=======
       /* ── Dossier hero reveal ── */
 
       gsap.utils.toArray<HTMLElement>(".dossier-hero").forEach((hero) => {
@@ -561,7 +549,6 @@ export function ArchiveExperience() {
         }
       });
 
->>>>>>> dd1bcf5 (Update project)
       /* ── Outro reveal ── */
 
       const outroLines =
@@ -588,54 +575,19 @@ export function ArchiveExperience() {
   );
 
   /* ──────────────────────────────────────────────
-<<<<<<< HEAD
-     SCENE 4 — Deck of Evidence scrub
-=======
      SCENE 4 — Deck of Evidence (pinned single-card)
->>>>>>> dd1bcf5 (Update project)
      ────────────────────────────────────────────── */
 
   useGSAP(
     () => {
       const root = rootRef.current;
-<<<<<<< HEAD
-      const deckPin = deckPinRef.current;
-      if (!root || !deckPin) return;
-=======
       if (!root) return;
->>>>>>> dd1bcf5 (Update project)
 
       const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
       if (reducedMotion) {
-<<<<<<< HEAD
-        // Fallback for reduced motion: just show cards statically or gracefully fallback
-        return;
-      }
-
-      const cards = gsap.utils.toArray<HTMLElement>(".deck-card");
-      
-      // Make sure cards reset to starting position before pinning
-      gsap.set(cards, {
-        opacity: 0,
-        z: -200,
-        y: "10vh",
-        rotateX: 15,
-      });
-      gsap.set(".deck-card-inner", { rotateY: 0 });
-
-      // Create a master timeline pinned to the DeckRoom
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: deckPin,
-          pin: true,
-          start: "top top",
-          // The end is proportional to the number of cards so there's enough scroll space
-          end: `+=${cards.length * 100}%`,
-          scrub: 1,
-=======
         gsap.set(".deck-card", { opacity: 1 });
         gsap.set(".deck-card-inner", { rotateY: 180 });
         return;
@@ -689,21 +641,10 @@ export function ArchiveExperience() {
           start: "top top",
           end: `+=${totalCards * 150}%`,
           scrub: 0.8,
->>>>>>> dd1bcf5 (Update project)
           anticipatePin: 1,
         },
       });
 
-<<<<<<< HEAD
-      cards.forEach((card, i) => {
-        const isFinal = card.classList.contains("deck-card--final");
-        const inner = card.querySelector(".deck-card-inner");
-
-        // The time index for this card's sequence
-        const startTime = i * 2;
-
-        // Step 1: Card rises from the deck, scales up, fades in
-=======
       // Each card gets a 4-phase sequence
       // Phase durations within each card's time budget (1 unit per card)
       cards.forEach((card, i) => {
@@ -712,23 +653,10 @@ export function ArchiveExperience() {
         const t = i; // timeline position for this card
 
         // Phase 1: Card enters — rises from below, fades in
->>>>>>> dd1bcf5 (Update project)
         timeline.to(
           card,
           {
             opacity: 1,
-<<<<<<< HEAD
-            z: 0,
-            y: "0vh",
-            rotateX: 0,
-            duration: 0.8,
-            ease: "power2.out",
-          },
-          startTime
-        );
-
-        // Step 2: Card flips over revealing the reason
-=======
             y: "0vh",
             rotateX: 0,
             duration: 0.25,
@@ -738,44 +666,11 @@ export function ArchiveExperience() {
         );
 
         // Phase 2: Card flips — rotateY 180 reveals the front face
->>>>>>> dd1bcf5 (Update project)
         if (inner) {
           timeline.to(
             inner,
             {
               rotateY: 180,
-<<<<<<< HEAD
-              duration: 1.2,
-              ease: "power3.inOut",
-            },
-            startTime + 0.2 // Start flipping slightly after it starts rising
-          );
-        }
-
-        // Step 3: Card is discarded by flying past the camera, OR it triggers the final wash
-        if (isFinal) {
-          // Final card stays, wash effect fades in
-          timeline.to(
-            ".deck-transition-wash",
-            {
-              opacity: 1,
-              duration: 1.5,
-              ease: "power2.in",
-            },
-            startTime + 2.5 // After pause for reading
-          );
-        } else {
-          // Normal card flies past the camera to reveal next card
-          timeline.to(
-            card,
-            {
-              z: 400, // Move past camera
-              opacity: 0,
-              duration: 0.8,
-              ease: "power2.in",
-            },
-            startTime + 2.5 // After pause for reading
-=======
               duration: 0.35,
               ease: "power3.inOut",
             },
@@ -812,7 +707,6 @@ export function ArchiveExperience() {
               ease: "power2.in",
             },
             t + 0.75,
->>>>>>> dd1bcf5 (Update project)
           );
         }
       });
@@ -820,8 +714,6 @@ export function ArchiveExperience() {
     { scope: rootRef },
   );
 
-<<<<<<< HEAD
-=======
   /* ──────────────────────────────────────────────
      SCENE 5 — The Letter Room
      ────────────────────────────────────────────── */
@@ -917,7 +809,6 @@ export function ArchiveExperience() {
     { scope: rootRef },
   );
 
->>>>>>> dd1bcf5 (Update project)
   return (
     <main
       ref={rootRef}
@@ -954,14 +845,10 @@ export function ArchiveExperience() {
       <CaseFileRoom caseFile={archiveRooms.caseFile} />
 
       {/* ── Scene 4 — Deck of Evidence ── */}
-<<<<<<< HEAD
-      <DeckRoom ref={deckPinRef} />
-=======
       <DeckRoom />
 
       {/* ── Scene 5 — Letter Room ── */}
       <LetterRoom />
->>>>>>> dd1bcf5 (Update project)
     </main>
   );
 }

@@ -14,8 +14,6 @@ export type EvidenceItem = {
   contain?: boolean;
 };
 
-<<<<<<< HEAD
-=======
 export type DossierHero = {
   src: string;
   alt: string;
@@ -23,7 +21,6 @@ export type DossierHero = {
   closingStamp: string;
 };
 
->>>>>>> dd1bcf5 (Update project)
 export type DossierSection = {
   id: string;
   title: string;
@@ -31,10 +28,7 @@ export type DossierSection = {
   classification: string;
   accent: DossierAccent;
   evidence: EvidenceItem[];
-<<<<<<< HEAD
-=======
   hero?: DossierHero;
->>>>>>> dd1bcf5 (Update project)
 };
 
 export const archiveRooms = {
@@ -176,13 +170,6 @@ export const archiveRooms = {
             src: "/photos/rishu/IMG_7320.JPG",
             alt: "Rishu and Anjali — unbreakable alliance",
             notes: [
-<<<<<<< HEAD
-              "Despite constant roasting, bad jokes, and questionable advice —",
-              "the alliance remains strong.",
-            ],
-          },
-        ] satisfies EvidenceItem[],
-=======
               "Alliance durability test: passed.",
             ],
           },
@@ -198,7 +185,6 @@ export const archiveRooms = {
           ],
           closingStamp: "DOSSIER COMPLETE",
         },
->>>>>>> dd1bcf5 (Update project)
       },
       {
         id: "ishu-anjali",

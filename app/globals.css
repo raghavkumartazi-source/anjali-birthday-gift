@@ -843,8 +843,6 @@ html.lenis body {
   text-shadow: 0 0 1.5rem rgba(245, 200, 111, 0.25);
 }
 
-<<<<<<< HEAD
-=======
 /* ── Dossier hero closing image ── */
 
 .dossier-hero {
@@ -906,8 +904,6 @@ html.lenis body {
   text-transform: uppercase;
   text-shadow: 0 0 1rem rgba(245, 200, 111, 0.3);
 }
-
->>>>>>> dd1bcf5 (Update project)
 /* ── Scene 3 responsive overrides ── */
 
 @media (min-width: 768px) {
@@ -930,13 +926,10 @@ html.lenis body {
   .dossier-tab-title {
     font-size: 1.35rem;
   }
-<<<<<<< HEAD
-=======
 
   .dossier-hero-frame {
     width: min(32rem, 55vw);
   }
->>>>>>> dd1bcf5 (Update project)
 }
 
 @media (max-width: 370px) {
@@ -955,13 +948,10 @@ html.lenis body {
   .evidence-note {
     font-size: 0.74rem;
   }
-<<<<<<< HEAD
-=======
 
   .dossier-hero-line {
     font-size: 0.82rem;
   }
->>>>>>> dd1bcf5 (Update project)
 }
 
 /* ── Scene 3 reduced motion ── */
@@ -991,33 +981,6 @@ html.lenis body {
    SCENE 4 — THE DECK OF EVIDENCE
    ========================================================================== */
 
-<<<<<<< HEAD
-.deck-room {
-  position: relative;
-  min-height: 100svh;
-  background: #020202;
-  overflow: clip;
-  perspective: 1200px;
-}
-
-.deck-camera {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
-}
-
-.deck-card {
-  position: absolute;
-  width: min(80vw, 24rem);
-  aspect-ratio: 2.5 / 3.5;
-  transform-style: preserve-3d;
-  will-change: transform, opacity;
-  /* Start lower and slightly pushed back, representing the deck */
-  transform: translateZ(-200px) translateY(10vh) rotateX(15deg);
-=======
 .deck-section {
   position: relative;
   background: #020202;
@@ -1087,7 +1050,6 @@ html.lenis body {
   aspect-ratio: 2.5 / 3.5;
   transform-style: preserve-3d;
   will-change: transform, opacity;
->>>>>>> dd1bcf5 (Update project)
   opacity: 0;
 }
 
@@ -1099,156 +1061,6 @@ html.lenis body {
   will-change: transform;
 }
 
-<<<<<<< HEAD
-.deck-card-face {
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1.5rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-/* ── Card Back ── */
-.deck-card-back {
-  background: repeating-linear-gradient(
-    45deg,
-    #0a0a0a,
-    #0a0a0a 10px,
-    #0f0f0f 10px,
-    #0f0f0f 20px
-  );
-  display: grid;
-  place-items: center;
-  transform: rotateY(0deg); /* This is the side facing us initially */
-}
-
-.deck-card-back-pattern {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  padding: 2rem 1rem;
-  border-radius: 8px;
-  background: #020202;
-}
-
-.deck-card-back-pattern span {
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: rgba(255, 255, 255, 0.15);
-  letter-spacing: 0.1em;
-}
-
-/* ── Card Front (Hidden initially) ── */
-.deck-card-front {
-  background: linear-gradient(135deg, #111, #050505);
-  transform: rotateY(180deg); /* Facing away initially */
-}
-
-/* Suit colors */
-.deck-card--hearts .deck-card-front {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 107, 87, 0.2), inset 0 0 0 1px rgba(255, 107, 87, 0.5);
-}
-.deck-card--spades .deck-card-front {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(105, 255, 181, 0.2), inset 0 0 0 1px rgba(105, 255, 181, 0.5);
-}
-.deck-card--clubs .deck-card-front {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(189, 239, 255, 0.2), inset 0 0 0 1px rgba(189, 239, 255, 0.5);
-}
-.deck-card--diamonds .deck-card-front {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(245, 200, 111, 0.2), inset 0 0 0 1px rgba(245, 200, 111, 0.5);
-}
-
-.card-corner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: var(--font-geist-mono), monospace;
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-
-.card-corner-tl {
-  align-self: flex-start;
-}
-
-.card-corner-br {
-  align-self: flex-end;
-  transform: rotate(180deg);
-}
-
-.deck-card--hearts .card-corner { color: var(--archive-red); }
-.deck-card--spades .card-corner { color: var(--archive-green); }
-.deck-card--clubs .card-corner { color: var(--archive-ice); }
-.deck-card--diamonds .card-corner { color: var(--archive-amber); }
-
-.card-suit {
-  font-size: 1.5rem;
-  margin-top: -0.2rem;
-}
-
-.card-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  gap: 0.5rem;
-  padding: 0 1rem;
-}
-
-.card-line {
-  margin: 0;
-  font-family: var(--font-geist-sans);
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #fff;
-  line-height: 1.4;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-}
-
-/* The Final Card */
-.deck-card--final .deck-card-front {
-  background: radial-gradient(circle at center, #2a0a0a, #050000);
-  box-shadow: 0 0 60px rgba(255, 107, 87, 0.4), inset 0 0 0 2px var(--archive-red);
-}
-
-.deck-card--final .card-line {
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: var(--archive-red);
-  text-shadow: 0 0 10px rgba(255, 107, 87, 0.6);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-/* ── The Transition Wash ── */
-.deck-transition-wash {
-  position: absolute;
-  inset: 0;
-  background: #fff;
-  z-index: 100;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* ── Responsive overrides ── */
-@media (max-width: 370px) {
-  .deck-card {
-    width: min(90vw, 20rem);
-  }
-  .card-line {
-    font-size: 0.95rem;
-  }
-}
-=======
 /* ── Card faces (shared) ── */
 
 .deck-card-face {
@@ -1649,4 +1461,3 @@ html.lenis body {
   }
 }
 
->>>>>>> dd1bcf5 (Update project)

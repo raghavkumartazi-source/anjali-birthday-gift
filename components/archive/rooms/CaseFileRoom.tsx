@@ -46,8 +46,6 @@ export function CaseFileRoom({ caseFile }: CaseFileRoomProps) {
           {dossier.evidence.map((item) => (
             <EvidenceItem key={item.id} item={item} />
           ))}
-<<<<<<< HEAD
-=======
 
           {/* Hero closing image (if present) */}
           {dossier.hero && (
@@ -76,7 +74,6 @@ export function CaseFileRoom({ caseFile }: CaseFileRoomProps) {
               </p>
             </div>
           )}
->>>>>>> dd1bcf5 (Update project)
         </div>
       ))}
 
