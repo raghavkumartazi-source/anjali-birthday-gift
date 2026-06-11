@@ -11,6 +11,7 @@ import { RecoveredFootageRoom } from "@/components/archive/rooms/RecoveredFootag
 import { CaseFileRoom } from "@/components/archive/rooms/CaseFileRoom";
 import { DeckRoom } from "@/components/archive/rooms/DeckRoom";
 import { LetterRoom } from "@/components/archive/rooms/LetterRoom";
+import { FinaleRoom } from "@/components/archive/rooms/FinaleRoom";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -715,7 +716,7 @@ export function ArchiveExperience() {
   );
 
   /* ──────────────────────────────────────────────
-     SCENE 5 — The Letter Room
+     SCENE 5 — The Private Archive (redesigned)
      ────────────────────────────────────────────── */
 
   useGSAP(
@@ -723,87 +724,312 @@ export function ArchiveExperience() {
       const root = rootRef.current;
       if (!root) return;
 
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
+      const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      /* ── Letter blocks: gentle fade-in ── */
-
+      /* gather */
+      const entryMsgs = gsap.utils.toArray<HTMLElement>(".letter-entry-msg");
+      const fileContainers = gsap.utils.toArray<HTMLElement>(".letter-file-container");
       const allBlocks = gsap.utils.toArray<HTMLElement>(".letter-block");
-      const bridgeEl = root.querySelector(".letter-bridge-text");
-      const headerEls = gsap.utils.toArray<HTMLElement>(".letter-header");
+      const bridgeMsgs = gsap.utils.toArray<HTMLElement>(".letter-bridge-msg");
+      const exitMsgs = gsap.utils.toArray<HTMLElement>(".letter-exit-msg");
 
-      if (reducedMotion) {
-        gsap.set([...allBlocks, ...headerEls], { autoAlpha: 1, y: 0 });
-        if (bridgeEl) gsap.set(bridgeEl, { autoAlpha: 1, y: 0 });
+      if (rm) {
+        gsap.set([...entryMsgs, ...fileContainers, ...allBlocks, ...bridgeMsgs, ...exitMsgs],
+          { autoAlpha: 1, y: 0, scale: 1 });
         return;
       }
 
-      // Initial states
-      gsap.set(allBlocks, { autoAlpha: 0, y: 18 });
-      gsap.set(headerEls, { autoAlpha: 0, y: 14 });
-      if (bridgeEl) gsap.set(bridgeEl, { autoAlpha: 0, y: 10 });
+      /* initial states */
+      gsap.set(entryMsgs, { autoAlpha: 0, y: 12 });
+      gsap.set(fileContainers, { autoAlpha: 0, scale: 0.96, y: 30 });
+      gsap.set(allBlocks, { autoAlpha: 0, y: 30, filter: "blur(5px)" });
+      gsap.set(bridgeMsgs, { autoAlpha: 0, y: 10 });
+      gsap.set(exitMsgs, { autoAlpha: 0, y: 10 });
 
-      // Letter headers
-      headerEls.forEach((header) => {
-        gsap.to(header, {
+      /* ── Entry sequence ── */
+      const entryTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".letter-entry",
+          start: "top 65%",
+          end: "top 5%",
+          scrub: 1,
+        },
+      });
+      entryMsgs.forEach((msg, i) => {
+        entryTl.to(msg, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, i * 0.12);
+      });
+
+      /* ── File containers ── */
+      fileContainers.forEach((container) => {
+        gsap.to(container, {
           autoAlpha: 1,
+          scale: 1,
           y: 0,
-          duration: 0.6,
-          ease: "power2.out",
+          duration: 0.5,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: header,
-            start: "top 78%",
+            trigger: container,
+            start: "top 80%",
             end: "top 50%",
             scrub: 1,
           },
         });
       });
 
-      // Each paragraph/hero/climax block
+      /* ── Letter blocks — type-aware ── */
       allBlocks.forEach((block) => {
         const blockType = block.getAttribute("data-block-type");
-        const isClimax = blockType === "climax";
 
-        gsap.to(block, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: block,
-            start: "top 82%",
-            end: "top 55%",
-            scrub: 1,
-          },
-        });
-
-        // Climax line: pin briefly so the experience holds
-        if (isClimax) {
-          ScrollTrigger.create({
-            trigger: block,
-            start: "center center",
-            end: "+=60%",
-            pin: true,
-            pinSpacing: true,
+        if (blockType === "hero") {
+          gsap.set(block, { scale: 0.94, filter: "blur(7px)" });
+          gsap.to(block, {
+            autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)",
+            duration: 0.6, ease: "power3.out",
+            scrollTrigger: { trigger: block, start: "top 82%", end: "top 35%", scrub: 1.3 },
+          });
+        } else if (blockType === "climax") {
+          gsap.set(block, { scale: 0.9, filter: "blur(9px)" });
+          gsap.to(block, {
+            autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)",
+            duration: 0.5, ease: "power3.out",
+            scrollTrigger: { trigger: block, start: "top 80%", end: "top 38%", scrub: 1.2 },
+          });
+          // Pin climax
+          const climaxPin = ScrollTrigger.create({
+            trigger: block, start: "center center", end: "+=80%",
+            pin: true, pinSpacing: true,
+          });
+          const textEl = block.querySelector(".letter-text");
+          if (textEl) {
+            gsap.to(textEl, {
+              textShadow: "0 0 4rem rgba(245,200,111,0.4)",
+              duration: 1, ease: "power1.inOut",
+              scrollTrigger: {
+                trigger: block,
+                start: () => climaxPin.start + "",
+                end: () => climaxPin.end + "",
+                scrub: 1,
+              },
+            });
+          }
+        } else if (blockType === "greeting") {
+          gsap.set(block, { filter: "blur(3px)" });
+          gsap.to(block, {
+            autoAlpha: 1, y: 0, filter: "blur(0px)",
+            duration: 0.4, ease: "power3.out",
+            scrollTrigger: { trigger: block, start: "top 83%", end: "top 58%", scrub: 1 },
+          });
+        } else if (blockType === "signature") {
+          gsap.set(block, { scale: 0.95 });
+          gsap.to(block, {
+            autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)",
+            duration: 0.4, ease: "power3.out",
+            scrollTrigger: { trigger: block, start: "top 82%", end: "top 55%", scrub: 1 },
+          });
+        } else {
+          gsap.to(block, {
+            autoAlpha: 1, y: 0, filter: "blur(0px)",
+            duration: 0.4, ease: "power3.out",
+            scrollTrigger: { trigger: block, start: "top 85%", end: "top 56%", scrub: 1 },
           });
         }
       });
 
-      // Bridge transition
-      if (bridgeEl) {
-        gsap.to(bridgeEl, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.4,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: bridgeEl,
-            start: "top 70%",
-            end: "top 40%",
-            scrub: 1,
-          },
+      /* ── Bridge messages ── */
+      const bridgeTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".letter-bridge",
+          start: "top 68%",
+          end: "top 15%",
+          scrub: 1,
+        },
+      });
+      bridgeMsgs.forEach((msg, i) => {
+        bridgeTl.to(msg, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, i * 0.2);
+      });
+
+      /* ── Exit sequence ── */
+      const exitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".letter-exit",
+          start: "top 65%",
+          end: "top 5%",
+          scrub: 1,
+        },
+      });
+      exitMsgs.forEach((msg, i) => {
+        exitTl.to(msg, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, i * 0.14);
+      });
+    },
+    { scope: rootRef },
+  );
+
+  /* ──────────────────────────────────────────────
+     SCENE 6 — Case Closed / Finale (redesigned)
+     ────────────────────────────────────────────── */
+
+  useGSAP(
+    () => {
+      const root = rootRef.current;
+      if (!root) return;
+
+      const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* gather */
+      const scanMsgs = gsap.utils.toArray<HTMLElement>(".finale-scan-msg");
+      const photoFrame = root.querySelector<HTMLElement>(".finale-photo-frame");
+      const photoScanlines = root.querySelector<HTMLElement>(".finale-photo-scanlines");
+      const reactions = gsap.utils.toArray<HTMLElement>(".finale-reaction");
+      const memTitle = root.querySelector<HTMLElement>(".finale-memories-title");
+      const memCards = gsap.utils.toArray<HTMLElement>(".finale-memory-card");
+      const verdictMsgs = gsap.utils.toArray<HTMLElement>(".finale-verdict-msg");
+      const verdictLabel = root.querySelector<HTMLElement>(".finale-verdict-label");
+      const verdictResult = root.querySelector<HTMLElement>(".finale-verdict-result");
+      const bdayLines = gsap.utils.toArray<HTMLElement>(".finale-bday-line");
+      const codaLines = gsap.utils.toArray<HTMLElement>(".finale-coda-line");
+      const shutdownTitle = root.querySelector<HTMLElement>(".finale-shutdown-title");
+      const checks = gsap.utils.toArray<HTMLElement>(".finale-check");
+      const termLines = gsap.utils.toArray<HTMLElement>(".finale-term-line");
+      const cursor = root.querySelector<HTMLElement>(".finale-cursor");
+
+      if (rm) {
+        const all = [...scanMsgs, ...reactions, ...memCards, ...verdictMsgs, ...bdayLines, ...codaLines, ...checks, ...termLines];
+        gsap.set(all, { autoAlpha: 1, y: 0, scale: 1, x: 0 });
+        [photoFrame, photoScanlines, memTitle, verdictLabel, verdictResult, shutdownTitle, cursor].forEach(el => {
+          if (el) gsap.set(el, { autoAlpha: 1, y: 0, scale: 1 });
         });
+        if (photoScanlines) gsap.set(photoScanlines, { autoAlpha: 0 });
+        return;
+      }
+
+      /* initial states */
+      gsap.set(scanMsgs, { autoAlpha: 0, y: 12 });
+      if (photoFrame) gsap.set(photoFrame, { autoAlpha: 0, scale: 0.85 });
+      if (photoScanlines) gsap.set(photoScanlines, { autoAlpha: 1 });
+      gsap.set(reactions, { autoAlpha: 0, y: 8 });
+      if (memTitle) gsap.set(memTitle, { autoAlpha: 0, y: 8 });
+      gsap.set(memCards, { autoAlpha: 0, y: 20, scale: 0.96 });
+      gsap.set(verdictMsgs, { autoAlpha: 0, y: 10 });
+      if (verdictLabel) gsap.set(verdictLabel, { autoAlpha: 0, y: 8 });
+      if (verdictResult) gsap.set(verdictResult, { autoAlpha: 0, y: 30, scale: 0.9, filter: "blur(10px)" });
+      gsap.set(bdayLines, { autoAlpha: 0, y: 40, scale: 0.8, filter: "blur(10px)" });
+      gsap.set(codaLines, { autoAlpha: 0, y: 18, filter: "blur(4px)" });
+      if (shutdownTitle) gsap.set(shutdownTitle, { autoAlpha: 0, y: 8 });
+      gsap.set(checks, { autoAlpha: 0, x: -15 });
+      gsap.set(termLines, { autoAlpha: 0, y: 10 });
+      if (cursor) gsap.set(cursor, { autoAlpha: 0 });
+
+      /* ── Part 1: Scan messages ── */
+      const scanTl = gsap.timeline({
+        scrollTrigger: { trigger: ".finale-scan-intro", start: "top 65%", end: "top 5%", scrub: 1 },
+      });
+      scanMsgs.forEach((msg, i) => {
+        scanTl.to(msg, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, i * 0.16);
+      });
+
+      /* Photo reveal + scanlines clear */
+      if (photoFrame) {
+        gsap.to(photoFrame, {
+          autoAlpha: 1, scale: 1,
+          duration: 0.5, ease: "back.out(1.3)",
+          scrollTrigger: { trigger: ".finale-photo-stage", start: "top 72%", end: "top 35%", scrub: 1 },
+        });
+      }
+      if (photoScanlines) {
+        gsap.to(photoScanlines, {
+          autoAlpha: 0,
+          duration: 0.4, ease: "power2.out",
+          scrollTrigger: { trigger: ".finale-photo-stage", start: "top 40%", end: "top 10%", scrub: 1 },
+        });
+      }
+
+      // Reactions
+      const reactionTl = gsap.timeline({
+        scrollTrigger: { trigger: ".finale-photo-reactions", start: "top 82%", end: "top 45%", scrub: 1 },
+      });
+      reactions.forEach((r, i) => {
+        reactionTl.to(r, { autoAlpha: 1, y: 0, duration: 0.1, ease: "power2.out" }, i * 0.18);
+      });
+
+      /* ── Part 2: Gang Memories ── */
+      if (memTitle) {
+        gsap.to(memTitle, {
+          autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out",
+          scrollTrigger: { trigger: ".finale-memories", start: "top 72%", end: "top 55%", scrub: 1 },
+        });
+      }
+      const memTl = gsap.timeline({
+        scrollTrigger: { trigger: ".finale-memory-grid", start: "top 78%", end: "top 10%", scrub: 1 },
+      });
+      memCards.forEach((card, i) => {
+        memTl.to(card, { autoAlpha: 1, y: 0, scale: 1, duration: 0.15, ease: "power2.out" }, i * 0.12);
+      });
+
+      /* ── Part 3: Verdict ── */
+      const vpTl = gsap.timeline({
+        scrollTrigger: { trigger: ".finale-verdict-process", start: "top 65%", end: "top 10%", scrub: 1 },
+      });
+      verdictMsgs.forEach((msg, i) => {
+        vpTl.to(msg, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, i * 0.2);
+      });
+
+      // Verdict reveal
+      if (verdictLabel) {
+        gsap.to(verdictLabel, {
+          autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out",
+          scrollTrigger: { trigger: ".finale-verdict-reveal", start: "top 75%", end: "top 55%", scrub: 1 },
+        });
+      }
+      if (verdictResult) {
+        gsap.to(verdictResult, {
+          autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)",
+          duration: 0.6, ease: "power3.out",
+          scrollTrigger: { trigger: ".finale-verdict-reveal", start: "top 70%", end: "top 30%", scrub: 1.3 },
+        });
+      }
+
+      /* ── Part 4: Birthday ── */
+      const bdayTl = gsap.timeline({
+        scrollTrigger: { trigger: ".finale-birthday-hero", start: "top 72%", end: "top 10%", scrub: 1.5 },
+      });
+      bdayLines.forEach((line, i) => {
+        bdayTl.to(line, {
+          autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)",
+          duration: 0.25, ease: "power3.out",
+        }, i * 0.2);
+      });
+
+      codaLines.forEach((line) => {
+        gsap.to(line, {
+          autoAlpha: 1, y: 0, filter: "blur(0px)",
+          duration: 0.4, ease: "power3.out",
+          scrollTrigger: { trigger: line, start: "top 82%", end: "top 55%", scrub: 1 },
+        });
+      });
+
+      /* ── Part 5: Shutdown + Terminal ── */
+      if (shutdownTitle) {
+        gsap.to(shutdownTitle, {
+          autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out",
+          scrollTrigger: { trigger: ".finale-shutdown", start: "top 72%", end: "top 55%", scrub: 1 },
+        });
+      }
+      const checkTl = gsap.timeline({
+        scrollTrigger: { trigger: ".finale-checklist", start: "top 75%", end: "top 15%", scrub: 1 },
+      });
+      checks.forEach((check, i) => {
+        checkTl.to(check, { autoAlpha: 1, x: 0, duration: 0.1, ease: "power2.out" }, i * 0.1);
+      });
+
+      // Terminal
+      const termTl = gsap.timeline({
+        scrollTrigger: { trigger: ".finale-terminal", start: "top 65%", end: "top 15%", scrub: 1 },
+      });
+      termLines.forEach((line, i) => {
+        termTl.to(line, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, i * 0.2);
+      });
+      if (cursor) {
+        termTl.to(cursor, { autoAlpha: 1, duration: 0.08, ease: "none" }, termLines.length * 0.2 + 0.1);
       }
     },
     { scope: rootRef },
@@ -849,6 +1075,9 @@ export function ArchiveExperience() {
 
       {/* ── Scene 5 — Letter Room ── */}
       <LetterRoom />
+
+      {/* ── Scene 6 — Case Closed ── */}
+      <FinaleRoom />
     </main>
   );
 }
